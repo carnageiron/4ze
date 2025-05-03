@@ -18,6 +18,7 @@
 #define CS1_PIN 15 // Chip select 1
 #define CS2_PIN 13 // Chip select 2
 #define RES_PIN 14 // Reset
+#define SO_PIN 25 // Sound Pin
 
 // Initialize KS0108 GLCD with the ESP32 pins
 KS0108_GLCD display = KS0108_GLCD(DI_PIN, RW_PIN, E_PIN, DB0_PIN, DB1_PIN, DB2_PIN, DB3_PIN, 
@@ -315,6 +316,11 @@ void testdrawbitmap() {
         (display.height() - LOGO_HEIGHT) / 2,
         logo_bmp, LOGO_WIDTH, LOGO_HEIGHT, 1);
     display.display();
+    //play sound for RTDS
+    //80-90 dB for 2-3 sec
+    digitalWrite(SO_PIN, HIGH); // Set to HIGH to make the buzzer sound
+    delay(3000);
+    digitalWrite(SO_PIN, LOW); // LOW to turn off the buzzer 
     delay(3000);
 }
 
