@@ -318,10 +318,11 @@ void testdrawbitmap() {
     display.display();
     //play sound for RTDS
     //80-90 dB for 2-3 sec
-    digitalWrite(SO_PIN, HIGH); // Set to HIGH to make the buzzer sound
+    digitalWrite(SO_PIN, HIGH);
     delay(3000);
-    digitalWrite(SO_PIN, LOW); // LOW to turn off the buzzer 
+    digitalWrite(SO_PIN, LOW);
     delay(3000);
+    //change this for changing RTDS settings
 }
 
 // Function to display speed
