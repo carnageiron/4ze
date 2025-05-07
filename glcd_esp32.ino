@@ -18,8 +18,15 @@
 #define CS1_PIN 15 // Chip select 1
 #define CS2_PIN 13 // Chip select 2
 #define RES_PIN 14 // Reset
-#define SO_PIN 25 // Sound Pin
+// Sound Pin
+#define BUTTON_PIN 12 //PHYSICAL BUTTON FOR MENU CYCLING
+#define CAPACITY_PIN 25
+#define HEALTH_PIN 15
+#define VOLTAGE_PIN 4
 
+int currentScreen = 0;
+unsigned long lastDebounceTime = 0;
+unsigned long debounceDelay = 200;
 // Initialize KS0108 GLCD with the ESP32 pins
 KS0108_GLCD display = KS0108_GLCD(DI_PIN, RW_PIN, E_PIN, DB0_PIN, DB1_PIN, DB2_PIN, DB3_PIN, 
                                  DB4_PIN, DB5_PIN, DB6_PIN, DB7_PIN, CS1_PIN, CS2_PIN, RES_PIN);
