@@ -1,72 +1,3 @@
-/*#include <Adafruit_GFX.h>   // Include Adafruit GFX library
-#include <KS0108_GLCD.h>  //Include KS0108 GLCD
-
-#define LOGO_WIDTH 128
-#define LOGO_HEIGHT 64
-
-// Pin mappings for Arduino Nano
-#define DI_PIN   2
-#define RW_PIN   3
-#define E_PIN    4
-#define DB0_PIN  5
-#define DB1_PIN  6
-#define DB2_PIN  7
-#define DB3_PIN  8
-#define DB4_PIN  9
-#define DB5_PIN  10
-#define DB6_PIN  11
-#define DB7_PIN  12
-#define CS1_PIN  A2
-#define CS2_PIN  A3
-#define RES_PIN  A4
-#define BUTTON_PIN A5
-#define CAPACITY_PIN A0
-
-// Menu Pages
-int menuIndex = 0;
-const int totalMenus = 4;
-unsigned long lastButtonPress = 0;
-const int debounceDelay = 250;
-
-// Sample logo bitmap (128x64, black and white)
-const uint8_t logoBitmap[] PROGMEM = {
-  // Replace this with your actual bitmap data (1024 bytes for 128x64 monochrome)
-  // Example: 0xFF, 0x00, 0xFF, ... 
-  // Use an online tool like https://javl.github.io/image2cpp/
-  // for full-screen bitmap conversion
-};
-
-// Draw logo
-void drawLogo() {
-  GLCD.ClearScreen();
-  GLCD.DrawBitmap(logoBitmap, 0, 0, 128, 64);
-  delay(2000);
-}
-
-// Simulate battery values
-float getSpeed() { return 35.2; }       // km/h
-float getCapacity() { return 78.2; }    // %
-float getVoltage() { return 48.6; }     // V
-float getSOH() { return 95.4; }         // %
-
-void setup() {
-  pinMode(BUTTON_PIN, INPUT_PULLUP);
-  GLCD.Init();
-  drawLogo();
-  displayMenu(menuIndex);
-}
-
-void loop() {
-  // Button Debounce and Menu Navigation
-  if (digitalRead(BUTTON_PIN) == LOW && millis() - lastButtonPress > debounceDelay) {
-    lastButtonPress = millis();
-    menuIndex = (menuIndex + 1) % totalMenus;
-    displayMenu(menuIndex);
-  }
-}
-*/
-
-
 #include <Adafruit_GFX.h>   // Include Adafruit GFX library
 #include <KS0108_GLCD.h>    // Include KS0108 GLCD library
 
@@ -424,7 +355,23 @@ void displayMenu(int index) {
   }
 }
 
-float speed() { return 35.2; }       // km/h
-float battery_cap() { return 78.2; }    // %
-float voltage() { return 48.6; }     // V
-float soh() { return 95.4; } 
+float speed() { 
+  int s = analogRead(A1);
+  int s1 = map(s, 0, 1023, 0, 100);
+  return s1; 
+  }
+float battery_cap() { 
+  int b = analogRead(A5);
+  int b1 = map(b, 0, 1023, 0, 100);
+  return b1;
+  }
+float voltage() {
+  int v = analogRead(A6);
+  int v1 = map(v, 0, 1023, 0, 350);  
+  return v1;
+  }
+float soh() {
+  int sh = analogRead(A7);
+  int sh1 = map(sh, 0, 1023, 0, 100);
+  return sh1;
+  } 
