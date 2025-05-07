@@ -84,8 +84,18 @@ FLASH glcd_v2.ino as it the more improved and worked on version also it is the m
 ## PIN LIST
 
 KS0108_GLCD display: D2, D3, D4, D5, D6, D7, D8, D9, D10, D11, D12, A2, A3, A4
+
+
 BUTTON_PIN: A0
+
+
 SPEED POTENTIOMETER: A1
+
+
 BATTERY_CAP: A5
+
+
 VOLTAGE: A6
+
+
 SOH: A7
