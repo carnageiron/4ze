@@ -312,12 +312,14 @@ void testdrawbitmap() {
     delay(1000);
 }
 
-//menu
-void displayMenu(int index) {
+//display menu infinite cycling 
+void displayMenu(int index)
+{
   display.clearDisplay();
   display.setTextSize(5);
 
-  switch (index) {
+  switch (index)
+  {
     case 0:
       display.setTextColor(KS0108_ON); 
       display.print(speed());
@@ -355,23 +357,27 @@ void displayMenu(int index) {
   }
 }
 
-float speed() { 
+float speed()
+{ 
   int s = analogRead(A1);
   int s1 = map(s, 0, 1023, 0, 100);
   return s1; 
-  }
-float battery_cap() { 
+}
+float battery_cap() 
+{ 
   int b = analogRead(A5);
   int b1 = map(b, 0, 1023, 0, 100);
   return b1;
-  }
-float voltage() {
+}
+float voltage() 
+{
   int v = analogRead(A6);
   int v1 = map(v, 0, 1023, 0, 350);  
   return v1;
-  }
-float soh() {
+}
+float soh() 
+{
   int sh = analogRead(A7);
   int sh1 = map(sh, 0, 1023, 0, 100);
   return sh1;
-  } 
+} 
