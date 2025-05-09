@@ -288,7 +288,7 @@ void setup() {
 
     display.clearDisplay(); // Clear the buffer
     testdrawbitmap();       // Draw a small bitmap image
-    delay(3000);
+    delay(1000);
     displayMenu(menuIndex);       // Draw stylized characters
 }
 
@@ -309,69 +309,88 @@ void testdrawbitmap() {
         (display.height() - LOGO_HEIGHT) / 2,
         logo_bmp, LOGO_WIDTH, LOGO_HEIGHT, 1);
     display.display();
-    delay(1000);
+    delay(3000);
 }
 
-//menu
-void displayMenu(int index) {
+//display menu infinite cycling 
+void displayMenu(int index)
+{
+  display.display();
   display.clearDisplay();
   display.setTextSize(5);
 
-  switch (index) {
+  switch (index)
+  {
     case 0:
-      display.setTextColor(KS0108_ON); 
+      display.setTextColor(KS0108_ON);
+      display.setTextSize(2.5);  
+      display.clearDisplay();
       display.print(speed());
-      display.setTextSize(2); 
       display.setCursor(65, 32);
       display.print(F("KM/H"));
       display.display();
+      display.clearDisplay();
       break;
 
     case 1:
       display.setTextColor(KS0108_ON); 
+      
       display.print(battery_cap());
+      display.setTextSize(2.5);
+      display.clearDisplay();
       display.setCursor(65, 32);
       display.print(F("%"));
       display.display();
+      display.clearDisplay();
       break;
 
     case 2:
-      display.setTextColor(KS0108_ON); 
+      display.setTextColor(KS0108_ON);
+      display.setTextSize(2.75);
+      display.clearDisplay();
       display.print(voltage());
       display.setTextSize(2); 
       display.setCursor(65, 32);
       display.print(F("V"));
       display.display();
+      display.clearDisplay();
       break;
 
     case 3:
-      display.setTextColor(KS0108_ON); 
+      display.setTextColor(KS0108_ON);
+      display.setTextSize(2.75);
+      display.clearDisplay();
       display.print(soh());
       display.setTextSize(2); 
       display.setCursor(65, 32);
       display.print(F("%"));
       display.display();
+      display.clearDisplay();
       break;
   }
 }
 
-float speed() { 
+float speed()
+{ 
   int s = analogRead(A1);
   int s1 = map(s, 0, 1023, 0, 100);
   return s1; 
-  }
-float battery_cap() { 
+}
+float battery_cap() 
+{ 
   int b = analogRead(A5);
   int b1 = map(b, 0, 1023, 0, 100);
   return b1;
-  }
-float voltage() {
+}
+float voltage() 
+{
   int v = analogRead(A6);
   int v1 = map(v, 0, 1023, 0, 350);  
   return v1;
-  }
-float soh() {
+}
+float soh() 
+{
   int sh = analogRead(A7);
   int sh1 = map(sh, 0, 1023, 0, 100);
   return sh1;
-  } 
+} 
