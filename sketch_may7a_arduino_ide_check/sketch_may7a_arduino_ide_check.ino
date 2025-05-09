@@ -7,7 +7,7 @@ KS0108_GLCD display = KS0108_GLCD(2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, A2, A3, A4
 #define BUTTON_PIN    A0      // Example: Button connected to analog pin A0
 #define debounceDelay 200     // 200ms debounce delay
 unsigned long lastButtonPress = 0;
-int menuIndex = 0;
+int menuIndex = 1;
 const int totalMenus = 4;     // 4 menus: speed, battery, voltage, SOH
 
 // Bitmap Logo Settings (adjust dimensions to match your image)
@@ -338,6 +338,7 @@ void displayMenu(int index)
       display.print(battery_cap());
       display.setTextSize(2.5);
       display.clearDisplay();
+      display.print(battery_cap());
       display.setCursor(65, 32);
       display.print(F("%"));
       display.display();
