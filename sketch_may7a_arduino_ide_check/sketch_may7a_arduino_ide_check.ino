@@ -309,7 +309,7 @@ void testdrawbitmap() {
         (display.height() - LOGO_HEIGHT) / 2,
         logo_bmp, LOGO_WIDTH, LOGO_HEIGHT, 1);
     display.display();
-    delay(3000);
+    delay(2000);
 }
 
 //display menu infinite cycling 
