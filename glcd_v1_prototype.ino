@@ -1,22 +1,20 @@
-#include <Adafruit_GFX.h>   // Include Adafruit GFX library
-#include <KS0108_GLCD.h>    // Include KS0108 GLCD library
+#include <Adafruit_GFX.h>   // Core graphics library for drawing shapes/text
+#include <KS0108_GLCD.h>    // Library for KS0108-based graphic LCD modules
 
-// Initialize KS0108 GLCD with the following pin configuration
+// Initialize KS0108 display: pins DB0–DB7 (2–9), RS, RW, E pins, and two chip selects on A2/A3, A4
 KS0108_GLCD display = KS0108_GLCD(2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, A2, A3, A4);
 
-#define BUTTON_PIN    A0      // Example: Button connected to analog pin A0
-#define debounceDelay 200     // 200ms debounce delay
-unsigned long lastButtonPress = 0;
-int menuIndex = 0;
-const int totalMenus = 4;     // 4 menus: speed, battery, voltage, SOH
+#define BUTTON_PIN    A0      // Define the analog pin A0 as the button input pin
+#define debounceDelay 200     // Debounce delay in milliseconds
+unsigned long lastButtonPress = 0;  // Timestamp of last valid button press
+int menuIndex = 0;                  // Currently displayed menu index
+const int totalMenus = 4;          // Total number of menu screens
 
-// Bitmap Logo Settings (adjust dimensions to match your image)
-#define LOGO_WIDTH   128       // Width of the logo in pixels
-#define LOGO_HEIGHT  64      // Height of the logo in pixels
+// Logo dimensions (should match bitmap's size)
+#define LOGO_WIDTH   128     
+#define LOGO_HEIGHT   64     
 
-
-
-// Bitmap logo data
+// Bitmap data stored in program memory (PROGMEM) for the logo
 static const unsigned char PROGMEM logo_bmp[] = {
   0B00000000, 0B00000000, 0B00000000, 0B00000000, 
   0B00000000, 0B00000000, 0B00000000, 0B00000000, 
@@ -277,106 +275,108 @@ static const unsigned char PROGMEM logo_bmp[] = {
 };
 
 void setup() {
-    Serial.begin(9600);
-    pinMode(BUTTON_PIN, INPUT_PULLUP);
+    Serial.begin(9600);  // Start serial communication at 9600 baud
+    pinMode(BUTTON_PIN, INPUT_PULLUP);  // Set button pin as input with internal pull-up
 
-    // Initialize the display
+    // Initialize the KS0108 display; retry until successful
     if (display.begin(KS0108_CS_ACTIVE_HIGH) == false) {
-        Serial.println(F("Display initialization failed!"));
-        while (true);  // Stay here forever
+        Serial.println(F("Display initialization failed!")); 
+        while (true);  // Stop execution if display init fails
     }
 
-    display.clearDisplay(); // Clear the buffer
-    testdrawbitmap();       // Draw a small bitmap image
-    delay(3000);
-    displayMenu(menuIndex);       // Draw stylized characters
+    display.clearDisplay(); // Clear any previous content on display buffer
+    testdrawbitmap();       // Draw the logo bitmap once at startup
+    delay(3000);            // Pause for 3 seconds to show the logo
+    displayMenu(menuIndex); // Show the first menu screen (index 0)
 }
 
 void loop() {
-    // Button Debounce and Menu Navigation
-  if (digitalRead(BUTTON_PIN) == LOW && millis() - lastButtonPress > debounceDelay) {
-    lastButtonPress = millis();
-    menuIndex = (menuIndex + 1) % totalMenus;
-    displayMenu(menuIndex);
-  }
+    // Check if button is pressed (LOW because of pull-up) and debounce time has passed
+    if (digitalRead(BUTTON_PIN) == LOW && millis() - lastButtonPress > debounceDelay) {
+        lastButtonPress = millis();         // Record the timestamp of this valid press
+        menuIndex = (menuIndex + 1) % totalMenus; // Cycle to next menu index
+        displayMenu(menuIndex);            // Update display with new menu
+    }
 }
 
-// Function to draw a bitmap
+// Show bitmap centered on the display
 void testdrawbitmap() {
-    display.clearDisplay();
+    display.clearDisplay(); 
     display.drawBitmap(
-        (display.width()  - LOGO_WIDTH) / 2,
-        (display.height() - LOGO_HEIGHT) / 2,
-        logo_bmp, LOGO_WIDTH, LOGO_HEIGHT, 1);
-    display.display();
-    delay(1000);
+        (display.width()  - LOGO_WIDTH) / 2,  // X center position
+        (display.height() - LOGO_HEIGHT) / 2, // Y center position
+        logo_bmp, LOGO_WIDTH, LOGO_HEIGHT, 1  // Bitmap data and color
+    );
+    display.display(); // Push buffer to screen
+    delay(1000);       // Wait 1 second (show bitmap)
 }
 
-//display menu infinite cycling 
-void displayMenu(int index)
-{
-  display.clearDisplay();
-  display.setTextSize(5);
+// Display the menu based on index (0–3)
+void displayMenu(int index) {
+  display.clearDisplay();       // Clear buffer
+  display.setTextSize(5);       // Use large text for primary metric
 
-  switch (index)
-  {
+  switch (index) {
     case 0:
-      display.setTextColor(KS0108_ON); 
-      display.print(speed());
-      display.setTextSize(2); 
-      display.setCursor(65, 32);
-      display.print(F("KM/H"));
-      display.display();
+      display.setTextColor(KS0108_ON);  // Turn on drawing color
+      display.print(speed());           // Print speed value
+      display.setTextSize(2);          // Smaller font for units
+      display.setCursor(65, 32);       // Move cursor to position
+      display.print(F("KM/H"));        // Print units label
+      display.display();               // Render to screen
       break;
 
     case 1:
-      display.setTextColor(KS0108_ON); 
-      display.print(battery_cap());
+      display.setTextColor(KS0108_ON);
+      display.print(battery_cap());    // Print battery capacity %
       display.setCursor(65, 32);
-      display.print(F("%"));
+      display.print(F("%"));           // Percentage sign
       display.display();
       break;
 
     case 2:
-      display.setTextColor(KS0108_ON); 
-      display.print(voltage());
-      display.setTextSize(2); 
+      display.setTextColor(KS0108_ON);
+      display.print(voltage());        // Print voltage value
+      display.setTextSize(2);
       display.setCursor(65, 32);
-      display.print(F("V"));
+      display.print(F("V"));           // Voltage unit label
       display.display();
       break;
 
     case 3:
-      display.setTextColor(KS0108_ON); 
-      display.print(soh());
-      display.setTextSize(2); 
+      display.setTextColor(KS0108_ON);
+      display.print(soh());            // Print State of Health %
+      display.setTextSize(2);
       display.setCursor(65, 32);
-      display.print(F("%"));
+      display.print(F("%"));           // Percentage label
       display.display();
       break;
   }
 }
 
-float speed()
-{ 
-  int s = analogRead(A1);
-  int s1 = map(s, 0, 1023, 0, 100);
-  return s1; 
+// Read raw analog, map to 0–100 for speed display
+float speed() { 
+  int s = analogRead(A1);                    
+  int s1 = map(s, 0, 1023, 0, 100);          
+  return s1;                                 
 }
-float battery_cap() 
-{ 
+
+// Read analog for battery %, map to 0–100
+float battery_cap() { 
   int b = analogRead(A5);
   int b1 = map(b, 0, 1023, 0, 100);
   return b1;
 }
-float voltage() 
-{
+
+// Read analog for voltage, map 0–1023 to 0–350 V
+float voltage() {
   int v = analogRead(A6);
   int v1 = map(v, 0, 1023, 0, 350);  
   return v1;
 }
-float soh() 
-{
+
+// Read analog for SOH, map to 0–100%
+float soh() {
   int sh = analogRead(A7);
   int sh1 = map(sh, 0, 1023, 0, 100);
   return sh1;
